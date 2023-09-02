@@ -33,7 +33,7 @@ pokemon_data = pd.merge(df, df_images, on=['pokedex_number', 'name'], how='left'
 os.chdir(IMAGE_PATH)
 # Layout
 layout = dbc.Container([
-    html.H1("Select the Pokemons that you want to compare"),
+    html.H3("Select the Pokemons that you want to compare"),
     dbc.Row([
         dbc.Col([
             dcc.Dropdown(

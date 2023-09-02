@@ -28,6 +28,18 @@ IMAGE_PATH= parent_folder.joinpath("src/assets/images").resolve()
 df_1 = pd.read_csv(DATA_PATH.joinpath('pokedex.csv'))
 df_1=df_1.drop('Unnamed: 0',axis=1)
 
+df_status=df_1.groupby('status').agg({'weight_kg':'mean','height_m':'mean','total_points':'mean','base_experience':'mean','hp':'mean','catch_rate':'mean','generation':'count'})
+status_df_stats=pd.DataFrame(df_status)
+status_df_stats=status_df_stats.reset_index()
+status_df_stats=status_df_stats.rename(columns={'status':'Status', 'weight_kg':'Weight(kg)','height_m':'Height(m)','total_points':'Total Points','base_experience':'Base Expereince','hp':'Hp','catch_rate':'Catch Rate','generation':'Generation'})
+status_df_stats['Weight(kg)']=round(status_df_stats['Weight(kg)'],0)
+status_df_stats['Height(m)']=round(status_df_stats['Height(m)'],0)
+status_df_stats['Total Points']=round(status_df_stats['Total Points'],0)
+status_df_stats['Base Expereince']=round(status_df_stats['Base Expereince'],0)
+status_df_stats['Hp']=round(status_df_stats['Hp'],0)
+status_df_stats['Catch Rate']=round(status_df_stats['Catch Rate'],0)
+
+
 df_1_rf_subset=df_1[['pokedex_number','name','generation','status','type_1','height_m','weight_kg','ability_1','total_points','hp','attack','defense','sp_attack','sp_defense','speed','catch_rate','base_friendship','base_experience','growth_rate']]
 df_1_rf_subset_normal=df_1_rf_subset[df_1_rf_subset['status']=='Normal']
 #Undersampling to take care of imbalanced data
@@ -69,7 +81,47 @@ reversefactor = dict(zip(range(4),definitions))
 
 existing_names=list(df_1_rf_subset.name.unique())
 
+fig = px.scatter(status_df_stats,x='Status', y='Weight(kg)',size='Weight(kg)')
+#fig.update_traces(texttemplate='%{text:.2s}', textposition='inside')
+fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)')
+fig.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
+fig.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
 
+fig_1 = px.scatter(status_df_stats,x='Status', y='Height(m)',size='Height(m)')
+#fig_1.update_traces(texttemplate='%{text:.2s}', textposition='inside')
+fig_1.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)')
+fig_1.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
+fig_1.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
+
+status_weight=dbc.Card([
+        dbc.CardBody(
+            [
+                html.H5("Did you know that Average weight of a Legendary Pokemon is ~5.5 times more than the Average weight of a human being? ", className='text-light'),
+                dcc.Graph(
+                    id='weight-type-1',
+                    figure=fig
+
+
+                ),
+
+            ],style={"border": "none", "backgroundColor":'#0e2535'}
+        )],style={"border": "none", "backgroundColor":'#0e2535'},className='m-0',
+    )
+
+status_height=dbc.Card([
+        dbc.CardBody(
+            [
+                html.H5("Cosmoem, a pyshcic type Legendary Pokemon has the least height (0.1m) but the highest weight (999.9 Kg) ", className='text-light'),
+                dcc.Graph(
+                    id='height-type-1',
+                    figure=fig_1
+
+
+                ),
+
+            ],style={"border": "none", "backgroundColor":'#0e2535'}
+        )],style={"border": "none", "backgroundColor":'#0e2535'},className='m-0',
+    )
 
 Parametertooltip = html.Div(
     [
@@ -151,7 +203,10 @@ layout = html.Div(
                   ],width=2),
               ]),
           html.Br(),
-          html.Div(id='predict-text')
+          html.Div(id='predict-text'),
+          dbc.Row([dbc.Col([status_weight],width=6),
+                   dbc.Col([status_height],width=6)])
+
 
     ]
 )

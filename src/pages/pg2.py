@@ -42,6 +42,9 @@ df_type=df_1.groupby('type_1').agg({'base_friendship':'mean','catch_rate':'mean'
 type_df_stats=pd.DataFrame(df_type)
 type_df_stats=type_df_stats.reset_index()
 type_df_stats=type_df_stats.rename(columns={'type_1':'Primary Type', 'base_friendship':'Base Friendship','catch_rate':'Catch Rate','total_points':'Total Points','generation':'Generation'})
+type_df_stats['Base Friendship']=round(type_df_stats['Base Friendship'],0)
+type_df_stats['Catch Rate']=round(type_df_stats['Catch Rate'],0)
+type_df_stats['Total Points']=round(type_df_stats['Total Points'],0)
 df_1_sort_type=pd.DataFrame()
 for t in df_1_sort['type_1'].unique():
     type_df = df_1_sort[df_1_sort['type_1']==t]
@@ -78,21 +81,44 @@ Toptooltip = html.Div(
 )
 
 fig = px.bar(type_df_stats,x='Primary Type', y='Base Friendship',text='Base Friendship')
-fig.update_traces(texttemplate='%{text:.2s}', textposition='outside')
-fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+fig.update_traces(texttemplate='%{text:.2s}', textposition='inside')
+fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)')
+fig.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=False, zeroline=False)
+fig.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=False, zeroline=False)
+
+
+fig_1 = px.bar(type_df_stats,x='Primary Type', y='Catch Rate',text='Catch Rate',color='Total Points')
+fig_1.update_traces(texttemplate='%{text:.3s}')
+fig_1.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'},paper_bgcolor='rgba(0,0,0,0)')
+fig_1.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=False, zeroline=False)
+fig_1.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=False, zeroline=False)
 
 type_friendship=dbc.Card([
         dbc.CardBody(
             [
-                html.H5("Dragon type Pokemons are the least friendly", className='text-warning'),
+                html.H5("Did you know that for Ash to earn Charizard's respect, he had to lit fires around Charizard to melt the ice and rubbed Charizard's body with his bare hands to help it warm up? "
+                        "Dragon type Pokemons are the least friendly", className='text-light'),
                 dcc.Graph(
                     id='friendship-type-1',
-                    figure=fig,
-                    style={"border": "none", "backgroundColor":'#0e2535'}
+                    figure=fig
+
+
+                ),
+                html.Hr(),
+                html.H5("Tentacool which is of Poison type is one of the easiest Pokemons to catch but they are weakest in terms of "
+                        "Total Points"
+                        , className='text-light'),
+                dcc.Graph(
+                    id='catch-type-1',
+                    figure=fig_1
+
+
                 )
             ],style={"border": "none", "backgroundColor":'#0e2535'}
         )],style={"border": "none", "backgroundColor":'#0e2535'},className='m-0',
     )
+
+
 
 os.chdir(IMAGE_PATH)
 def make_card(dict_poke):
@@ -149,6 +175,7 @@ layout = html.Div(
         Toptooltip,
         dbc.Row([dbc.Col([dbc.Container([cards])],width=6),
                 dbc.Col([type_friendship],width=6)]),
+        #dbc.Row([dbc.Col([type_catch],width=6)]),
         html.P('Out of these Pokemons, select the one that you want to catch -', className='fix_label',  style={'color': 'white'}),
         html.Div(
                 [
@@ -193,7 +220,7 @@ layout = html.Div(
                                          style_data={'textOverflow': 'hidden', 'color': 'white'},
                                          fixed_rows={'headers': True}
                                          )
-                ], width=6
+                ], width=12, className='m-auto'
             )
         ])
     ]
@@ -222,7 +249,7 @@ def update_cards(selected_value):
 
         dbc.Row([
         dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[2:3]], width=5),
-        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[3:4]], width=5)
+        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[3:4]], width=5),
         ],className="m-auto")
     ]
     return card_layout
