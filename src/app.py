@@ -23,18 +23,21 @@ sidebar = dbc.Nav(
 app.layout = dbc.Container([
     dbc.Row([
         dbc.Col(
-            html.Img(src='assets/pokemon-logo.png',style={'height':'90%', 'width':'20%'}), width=10),
-
+            html.Img(src='assets/pokemon-logo.png',style={'height':'100%', 'width':'60%'}), width=2),
         dbc.Col(
-            html.Img(src='assets/pokeball.png',style={'height':'80%', 'width':'100%'}), width=2),
+            html.H1("POKEMON TRAINER GUIDE",className="fw-bold fs-1 align-middle text-center mt-4", style={'fontSize':30, 'textAlign':'center'})
+            , width=8),
+
+        #dbc.Col(
+           # html.Img(src='assets/pokeball.png',style={'height':'80%', 'width':'100%'}), width=2),
 
             #html.Div("Pokemon",
                          #style={'fontSize':50, 'textAlign':'left',}))
     ], justify='start',className='h-5'),
 
-    dbc.Row(
-            html.P("POKEMON TRAINER GUIDE",className="fw-bold h-5", style={'fontSize':35,'fontColor':'black', 'textAlign':'center'})
-            ),
+    #dbc.Row(
+            #html.P("POKEMON TRAINER GUIDE",className="fw-bold h-5", style={'fontSize':35,'fontColor':'black', 'textAlign':'center'})
+            #),
 
     html.Hr(),
 

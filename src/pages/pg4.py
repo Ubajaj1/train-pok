@@ -42,13 +42,14 @@ newdf['Base Friendship'] = newdf['Base Friendship'].fillna(-1)
 
 # Layout
 layout = html.Div([
-    dcc.Dropdown(
+    html.H3("Select a Pokemon to see its evolution"),
+    dbc.Col([dcc.Dropdown(
         id='pokemon-dropdown',
         options=[{'label': name, 'value': name} for name in newdf['name'].unique()],
         value=newdf['name'].unique()[0],
         multi=False,
         style={'color': 'black'}
-    ),
+    )],width=6),
     html.Div(id='evolution-output'),
 ])
 
@@ -70,26 +71,26 @@ def update_evolution_output(selected_pokemon):
         link_container = html.Div([
             dbc.Card([
                 dbc.CardBody([
-                    html.P(f"Evolution Chain: {i}"),
+                    html.P(f"Evolution Chain: {i}",className='text-primary fw-bold fs-2 text'),
                     html.Div([
                         dbc.Card([
                             dbc.CardBody([
                                 dbc.CardImg(id='img-output', src='assets/images/' + sample.iloc[s]['name_split'] + ".png", top=True),
                                 dbc.CardBody([
-                                    html.H5(sample.iloc[s]['name'], className="card-title", style={'font-size': '12px'}),
-                                    html.P("Pokedex ID : " + str(sample.iloc[s]['Pokedex Number']), className="card-text", style={'font-size': '10px'}),
-                                    html.P("Status : " + sample.iloc[s]['Status'], className="card-text", style={'font-size': '10px'}),
-                                    html.P("Generation : " + str(sample.iloc[s]['Generation']), className="card-text", style={'font-size': '10px'}),
-                                    html.P("Friendship : " + str(int(sample.iloc[s]['Base Friendship'])), className="card-text", style={'font-size': '10px'}),
-                                    html.P("Catch Rate : " + str(int(sample.iloc[s]['Catch Rate'])), className="card-text", style={'font-size': '10px'}),
-                                    html.P("Total Points : " + str(int(sample.iloc[s]['Total Points'])), className="card-text", style={'font-size': '10px'}),
+                                    html.H5(sample.iloc[s]['name'], className="card-title fw-bold text-warning", style={'font-size': '20px'}),
+                                    html.P("Pokedex ID : " + str(sample.iloc[s]['Pokedex Number']), className="card-text fw-bold", style={'font-size': '16px'}),
+                                    html.P("Status : " + sample.iloc[s]['Status'], className="card-text fw-bold",
+                                           style={'font-size': '16px'}),
+                                    html.P("Generation : " + str(sample.iloc[s]['Generation']), className="card-text fw-bold",
+                                           style={'font-size': '16px'}),
+
                                 ])
                             ])
                         ], style={"width": "18rem", "backgroundColor": '#0e2535', "font_size": "5px"})
                         for s in range(len(sample))
                     ], style={'display': 'flex'})
                 ])
-            ], style={'width': '900px', 'height': '650px', 'margin': '50px', 'background-color': 'slategray'})
+            ], style={'width': '900px', 'height': '500px', 'margin': '10px', 'background-color': '#0e2535'})
         ])
         output.append(link_container)
 

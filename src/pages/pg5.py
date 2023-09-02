@@ -69,6 +69,28 @@ reversefactor = dict(zip(range(4),definitions))
 
 existing_names=list(df_1_rf_subset.name.unique())
 
+
+
+Parametertooltip = html.Div(
+    [
+        html.H3(
+            [
+                "Select the following ",
+                html.Span(
+                    "parameters",
+                    id="parameter-target",
+                    style={"textDecoration": "underline", "cursor": "pointer"},
+                ),
+                " to build your own Pokemon",
+            ]
+        ),
+        dbc.Tooltip(
+            "Please only use the up and down arrows to select numeric inputs "
+            ,
+            target="parameter-target",placement='bottom'),
+    ],className="style-tooltip"
+)
+
 def generate_new_pokemon_name(existing_names,num_syllables=2):
     new_name=""
     for i in range(num_syllables):
@@ -82,7 +104,7 @@ def generate_new_pokemon_name(existing_names,num_syllables=2):
 
 layout = html.Div(
     [
-        dcc.Markdown('Select the following parameters to build your own Pokemon'),
+       Parametertooltip,
        dbc.Row([
           dbc.Col([
               html.P('Primary Type'),
@@ -171,6 +193,6 @@ def update_values(type,ability,gen,tp,height,weight,growth,exp,fr,catch):
     y_pred_full = classifier_full.predict(new_data_scaled)
     y_pred_full = np.vectorize(reversefactor.get)(y_pred_full)
     new_name=generate_new_pokemon_name(existing_names)
-    return f"The name of your Pokemon is " + new_name + " and it is " + y_pred_full[0]
+    return html.H4(f"The name of your Pokemon is " + new_name + " and it is of " + y_pred_full[0] + " type",className='text-primary fw-bold')
 
 

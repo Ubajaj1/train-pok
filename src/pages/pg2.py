@@ -38,6 +38,10 @@ df_1=pd.merge(df_1,df_images,on=['pokedex_number','name'],how='left')
 df_1['catch_parameters']=(df_1['total_points']*(1/3)+df_1['catch_rate']*(1/3)+df_1['base_friendship']*(1/3))
 #sorting the values
 df_1_sort=df_1.sort_values(by=['type_1','catch_parameters'], ascending=[True,False])
+df_type=df_1.groupby('type_1').agg({'base_friendship':'mean','catch_rate':'mean','total_points':'mean','generation':'count'})
+type_df_stats=pd.DataFrame(df_type)
+type_df_stats=type_df_stats.reset_index()
+type_df_stats=type_df_stats.rename(columns={'type_1':'Primary Type', 'base_friendship':'Base Friendship','catch_rate':'Catch Rate','total_points':'Total Points','generation':'Generation'})
 df_1_sort_type=pd.DataFrame()
 for t in df_1_sort['type_1'].unique():
     type_df = df_1_sort[df_1_sort['type_1']==t]
@@ -52,27 +56,43 @@ df_1_sort_type_subset=df_1_sort_type[['Name','Primary Type','Secondary Type','Ba
 
 dict_poke=df_1_sort_type.to_dict('records')
 
-tooltip = html.Div(
+
+Toptooltip = html.Div(
     [
         html.P(
             [
-                "I wonder what ",
+                "These are the ",
                 html.Span(
-                    "floccinaucinihilipilification",
+                    "Top 4",
                     id="tooltip-target",
                     style={"textDecoration": "underline", "cursor": "pointer"},
                 ),
-                " means?",
+                " pokemons based on your selection",
             ]
         ),
         dbc.Tooltip(
-            "Noun: rare, "
-            "the action or habit of estimating something as worthless.",
-            target="tooltip-target",
-        ),
-    ]
+            "Top 4 are ranked based on the weighted average of 3 parameters namely Total Points, Catch Rate and Base Friendship"
+            ,
+            target="tooltip-target",placement='bottom'),
+    ],className="style-tooltip"
 )
 
+fig = px.bar(type_df_stats,x='Primary Type', y='Base Friendship',text='Base Friendship')
+fig.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+
+type_friendship=dbc.Card([
+        dbc.CardBody(
+            [
+                html.H5("Dragon type Pokemons are the least friendly", className='text-warning'),
+                dcc.Graph(
+                    id='friendship-type-1',
+                    figure=fig,
+                    style={"border": "none", "backgroundColor":'#0e2535'}
+                )
+            ],style={"border": "none", "backgroundColor":'#0e2535'}
+        )],style={"border": "none", "backgroundColor":'#0e2535'},className='m-0',
+    )
 
 os.chdir(IMAGE_PATH)
 def make_card(dict_poke):
@@ -83,26 +103,26 @@ def make_card(dict_poke):
                                 [   dbc.CardImg(id='img-output',src='assets/images/'+dict_poke['name_split']+ ".png", top=True),
                         dbc.CardBody(
                                  [
-                                     html.H5(poke_name, className="card-title"),
-                                     html.P("Pokedex ID : " + str(dict_poke['Pokedex Number']),className="card-text"
+                                     html.H4(poke_name, className="card-title text-warning"),
+                                     html.P("Pokedex ID : " + str(dict_poke['Pokedex Number']),className="card-text fw-bold"
                                             ),
                                      html.P("Status : " + dict_poke['Status'],
-                                     className="card-text"
+                                     className="card-text fw-bold"
                                                     ),
                                      html.P("Species : " + dict_poke['Species'],
-                                            className="card-text"
+                                            className="card-text fw-bold"
                                             ),
                                      html.P("Generation : " + str(dict_poke['Generation']),
-                                            className="card-text"
+                                            className="card-text fw-bold"
                                             ),
                                      html.P("Friendship : " + str(int(dict_poke['Base Friendship'])),
-                                            className="card-text"
+                                            className="card-text fw-bold"
                                             ),
                                      html.P("Catch Rate : " + str(int(dict_poke['Catch Rate'])),
-                                            className="card-text"
+                                            className="card-text fw-bold"
                                             ),
                                      html.P("Total Points : " + str(int(dict_poke['Total Points'])),
-                                            className = "card-text"
+                                            className = "card-text fw-bold"
                                              ),
 
 
@@ -111,23 +131,24 @@ def make_card(dict_poke):
                                     ),
                                 ]   )
                     ],
-                    style={"width": "18rem", "backgroundColor":'#0e2535'})
+                    style={"width": "16rem", "backgroundColor":'#0e2535'})
 cards=html.Div()
 buttons=html.Div()
 
 layout = html.Div(
     [  dbc.Row([
             dbc.Col(
-                [   html.P('Select the primary type of Pokemon that you want to catch', className='fix_label',  style={'color': 'white'}),
+                [   html.H3('Select the primary type of Pokemon that you want to catch', className='fix_label',  style={'color': 'white'}),
                     dcc.Dropdown(df_1_sort_type_subset['Primary Type'].unique(),id='type-choice', value='Grass',className='fw-bold',style={'color':'black'})
                 ], width=6
             )
+
         ]),
 
         html.Br(),
-        html.P(['These are the Top 4 Pokemons based on your selection'], className='fix_label',  style={'color': '#ffcb05'}),
-        tooltip,
-        dbc.Container([cards]),
+        Toptooltip,
+        dbc.Row([dbc.Col([dbc.Container([cards])],width=6),
+                dbc.Col([type_friendship],width=6)]),
         html.P('Out of these Pokemons, select the one that you want to catch -', className='fix_label',  style={'color': 'white'}),
         html.Div(
                 [
@@ -195,14 +216,14 @@ def update_cards(selected_value):
 
     card_layout = [
         dbc.Row([
-        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[0:1]], width=3),
-        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[1:2]], width=3)
-                ], className="m-auto"),
+        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[0:1]], width=5),
+        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[1:2]], width=5)
+                ],className="m-auto"),
 
         dbc.Row([
-        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[2:3]], width=3),
-        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[3:4]], width=3)
-        ], className="m-auto")
+        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[2:3]], width=5),
+        dbc.Col([dbc.Card(card, color="#0e2535", outline=True) for card in poke_cards[3:4]], width=5)
+        ],className="m-auto")
     ]
     return card_layout
 
