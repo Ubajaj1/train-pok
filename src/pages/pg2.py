@@ -62,13 +62,14 @@ dict_poke=df_1_sort_type.to_dict('records')
 
 Toptooltip = html.Div(
     [
-        html.P(
+        html.H6(
             [
                 "These are the ",
                 html.Span(
                     "Top 4",
                     id="tooltip-target",
                     style={"textDecoration": "underline", "cursor": "pointer"},
+                    className='text-primary'
                 ),
                 " pokemons based on your selection",
             ]
@@ -96,7 +97,7 @@ fig_1.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=Fal
 type_friendship=dbc.Card([
         dbc.CardBody(
             [
-                html.H5("Did you know that for Ash to earn Charizard's respect, he had to lit fires around Charizard to melt the ice and rubbed Charizard's body with his bare hands to help it warm up? "
+                html.H5("Did you know that for Ash to earn Charizard's respect, he had to lit fires around Charizard to melt the ice and rub Charizard's body with his bare hands to help it warm up? "
                         "Dragon type Pokemons are the least friendly", className='text-light'),
                 dcc.Graph(
                     id='friendship-type-1',
@@ -176,7 +177,7 @@ layout = html.Div(
         dbc.Row([dbc.Col([dbc.Container([cards])],width=6),
                 dbc.Col([type_friendship],width=6)]),
         #dbc.Row([dbc.Col([type_catch],width=6)]),
-        html.P('Out of these Pokemons, select the one that you want to catch -', className='fix_label',  style={'color': 'white'}),
+        html.H6('Out of these Pokemons, select the one that you want to catch -', className='fix_label',  style={'color': 'white'}),
         html.Div(
                 [
             dbc.RadioItems(
@@ -192,7 +193,7 @@ layout = html.Div(
                 ],
             className="radio-group",
                 ),
-        html.Br(),
+        #html.Br(),
 
         dbc.Row([dbc.Col(
                 [
@@ -203,7 +204,7 @@ layout = html.Div(
                                                      'backgroundColor': '#0e2535',
                                                      'color': '#FEFEFE',
                                                      'border-bottom': '0.10rem solid #313841',
-                                                     'font': 'Alilato'
+
 
                                                      },
                                          style_as_list_view=True,
@@ -220,7 +221,7 @@ layout = html.Div(
                                          style_data={'textOverflow': 'hidden', 'color': 'white'},
                                          fixed_rows={'headers': True}
                                          )
-                ], width=12, className='m-auto'
+                ], width=12, className='mt-4'
             )
         ])
     ]

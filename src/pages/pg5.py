@@ -81,6 +81,17 @@ reversefactor = dict(zip(range(4),definitions))
 
 existing_names=list(df_1_rf_subset.name.unique())
 
+df_generation=df_1.groupby('generation').agg({'pokedex_number':'count'})
+df_generation=df_generation.reset_index()
+df_generation=df_generation.rename(columns={'generation':'Generation','pokedex_number':'Number of Pokemons'})
+
+
+df_status_num=df_1.groupby('status').agg({'pokedex_number':'count'})
+df_status_num=df_status_num.reset_index()
+df_status_num=df_status_num.rename(columns={'status':'Status','pokedex_number':'Number of Pokemons'})
+
+
+
 fig = px.scatter(status_df_stats,x='Status', y='Weight(kg)',size='Weight(kg)')
 #fig.update_traces(texttemplate='%{text:.2s}', textposition='inside')
 fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)')
@@ -92,6 +103,21 @@ fig_1 = px.scatter(status_df_stats,x='Status', y='Height(m)',size='Height(m)')
 fig_1.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)')
 fig_1.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
 fig_1.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
+
+fig_3=px.line(df_generation, x='Generation', y='Number of Pokemons')
+#fig_3.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+fig_3.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)')
+fig_3.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
+fig_3.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
+
+fig_4=px.pie(df_status_num, values='Number of Pokemons', names='Status')
+fig_4.update_layout(
+    legend_title_font_color="green"
+)
+
+fig_4.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)')
+fig_4.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
+fig_4.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
 
 status_weight=dbc.Card([
         dbc.CardBody(
@@ -123,6 +149,37 @@ status_height=dbc.Card([
         )],style={"border": "none", "backgroundColor":'#0e2535'},className='m-0',
     )
 
+gen_population=dbc.Card([
+        dbc.CardBody(
+            [
+                html.H5("Starting Generation VI, Pokémon series moved to the 3D-era in all of this generation's games onwards. This is one of the reasons why these latter "
+                        "generations have less Pokemons.", className='text-light'),
+                dcc.Graph(
+                    id='gen-type-1',
+                    figure=fig_3
+
+
+                ),
+
+            ],style={"border": "none", "backgroundColor":'#0e2535'}
+        )],style={"border": "none", "backgroundColor":'#0e2535'},className='m-0',
+    )
+tab_population=dbc.Card([
+        dbc.CardBody(
+            [
+                html.H5("Did you know that you are 30 times more likely to encounter a Normal Pokemon as compared to a Mythical Pokemon?", className='text-light'),
+                dcc.Graph(
+                    id='status-type-1',
+                    figure=fig_4
+
+
+                ),
+
+            ],style={"border": "none", "backgroundColor":'#0e2535'}
+        )],style={"border": "none", "backgroundColor":'#0e2535'},className='m-0',
+    )
+
+
 Parametertooltip = html.Div(
     [
         html.H3(
@@ -132,6 +189,7 @@ Parametertooltip = html.Div(
                     "parameters",
                     id="parameter-target",
                     style={"textDecoration": "underline", "cursor": "pointer"},
+                    className='text-primary'
                 ),
                 " to build your own Pokemon",
             ]
@@ -205,7 +263,9 @@ layout = html.Div(
           html.Br(),
           html.Div(id='predict-text'),
           dbc.Row([dbc.Col([status_weight],width=6),
-                   dbc.Col([status_height],width=6)])
+                   dbc.Col([status_height],width=6)]),
+          dbc.Row([dbc.Col([tab_population],width=6),
+                   dbc.Col([gen_population],width=6)])
 
 
     ]
