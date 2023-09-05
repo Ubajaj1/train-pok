@@ -89,8 +89,9 @@ fig.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=False
 
 
 fig_1 = px.bar(type_df_stats,x='Primary Type', y='Catch Rate',text='Catch Rate',color='Total Points')
-fig_1.update_traces(texttemplate='%{text:.3s}')
-fig_1.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'},paper_bgcolor='rgba(0,0,0,0)')
+fig_1.update_traces(texttemplate='%{text:.3s}', textfont={'color': 'white'})
+fig_1.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'},paper_bgcolor='rgba(0,0,0,0)',font=dict(color='white'),
+        template="plotly_dark")
 fig_1.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=False, zeroline=False)
 fig_1.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=False, zeroline=False)
 
@@ -98,7 +99,7 @@ type_friendship=dbc.Card([
         dbc.CardBody(
             [
                 html.H5("Did you know that for Ash to earn Charizard's respect, he had to lit fires around Charizard to melt the ice and rub Charizard's body with his bare hands to help it warm up? "
-                        "Dragon type Pokemons are the least friendly", className='text-light'),
+                        " Ironically, Flying type Pokemons are the friendliest and Dragon type Pokemons are the least friendly", className='text-light'),
                 dcc.Graph(
                     id='friendship-type-1',
                     figure=fig
@@ -221,7 +222,7 @@ layout = html.Div(
                                          style_data={'textOverflow': 'hidden', 'color': 'white'},
                                          fixed_rows={'headers': True}
                                          )
-                ], width=12, className='mt-4'
+                ], width=12, className='m-4'
             )
         ])
     ]

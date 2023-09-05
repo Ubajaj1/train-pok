@@ -43,7 +43,8 @@ pvt_df.index.names = ['Primary Type']
 
 fig_2 = px.imshow(pvt_df, text_auto=True)
 #fig_2.update_traces(texttemplate='%{text:.2s}', textposition='inside')
-fig_2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)',height=600, width=900,legend_bgcolor='rgba(0,0,0,0)')
+fig_2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)',height=600, width=900,legend_bgcolor='rgba(0,0,0,0)',font=dict(color='white'),
+        template="plotly_dark",legend_title_text='Effectiveness')
 fig_2.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=False, zeroline=False)
 fig_2.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=False, zeroline=False)
 
@@ -51,7 +52,7 @@ type_attack=dbc.Card([
         dbc.CardBody(
             [
                 html.H5("Ash vs Gary in the Silver Conference is one of the most epic battles in Pokemon history"
-                        "Can you tell if Ash's flying type Charizard will be effective against Gary's water type Blastoise?", className='text-light'),
+                        " Can you tell if Ash's flying type Charizard will be effective against Gary's water type Blastoise?", className='text-light'),
                 dcc.Graph(
                     id='friendship-type-1',
                     figure=fig_2

@@ -115,7 +115,8 @@ fig_4.update_layout(
     legend_title_font_color="green"
 )
 
-fig_4.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)')
+fig_4.update_layout(uniformtext_minsize=8, uniformtext_mode='hide',xaxis={'categoryorder':'total ascending'}, paper_bgcolor='rgba(0,0,0,0)',font=dict(color='white'),
+        template="plotly_dark")
 fig_4.update_yaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
 fig_4.update_xaxes(title_font_color='white', tickfont_color='white',showgrid=True, zeroline=False)
 
