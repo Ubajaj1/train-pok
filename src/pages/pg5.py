@@ -192,7 +192,7 @@ Parametertooltip = html.Div(
                     style={"textDecoration": "underline", "cursor": "pointer"},
                     className='text-primary'
                 ),
-                " to build your own Pokemon",
+                " to build your own Pokemon (Challenge: Try to create a Legendary Pokemon)",
             ]
         ),
         dbc.Tooltip(
